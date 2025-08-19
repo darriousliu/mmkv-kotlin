@@ -1,13 +1,13 @@
 [versions]
-
 kotlin = "2.2.0"
-agp = "8.10.1"
+agp = "8.12.0"
 mmkv = "2.2.2"
 junit = "4.13.2"
 androidx-test = "1.6.1"
 androidx-test-runner = "1.6.2"
 desugar-jdk-libs = "2.1.5"
-vanniktech-maven-publish = "0.33.0"
+vanniktech-maven-publish = "0.34.0"
+atomicfu = "0.29.0"
 
 [libraries]
 
@@ -17,6 +17,7 @@ androidx-test-core = { group = "androidx.test", name = "core", version.ref = "an
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-test-runner" }
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidx-test" }
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
+kotlinx-atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version.ref = "atomicfu" }
 
 [plugins]
 
@@ -25,3 +26,4 @@ cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotli
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 vanniktech-maven-publish = { id = "com.vanniktech.maven.publish",  version.ref = "vanniktech-maven-publish" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

@@ -22,7 +22,7 @@ val processBuild = tasks.register<Exec>("processBuild") {
             mkdir -p build_cpp && \
             cd build_cpp && \
             cmake .. && \
-            make &&\
+            make && \
             echo $(shasum -a 256 libmmkvc.dylib | cut -d ' ' -f 1) > build-macos.hash
         """.trimIndent()
     )

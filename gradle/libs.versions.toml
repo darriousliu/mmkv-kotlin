@@ -8,6 +8,7 @@ androidx-test-runner = "1.6.2"
 desugar-jdk-libs = "2.1.5"
 vanniktech-maven-publish = "0.34.0"
 atomicfu = "0.29.0"
+coroutines = "1.10.2"
 
 [libraries]
 
@@ -18,6 +19,7 @@ androidx-test-runner = { group = "androidx.test", name = "runner", version.ref =
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "androidx-test" }
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
 kotlinx-atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version.ref = "atomicfu" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 
 [plugins]
 

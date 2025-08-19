@@ -67,8 +67,9 @@ kotlin {
         }
         jvmTest.dependencies {
             implementation(project(":jvm:macos"))
-            implementation(kotlin("test-junit"))
-            implementation(libs.junit)
+            implementation(kotlin("test"))
+            implementation(libs.kotlinx.atomicfu)
+            implementation(libs.kotlinx.coroutines.core)
         }
     }
 }

@@ -20,7 +20,9 @@ class MMKVImplTest {
     @BeforeTest
     fun setup() {
         mmkvRootDir = tempFolder.resolve("mmkv-test")
-        initialize(mmkvRootDir.absolutePath)
+        if (!NativeMMKV.isInitialized) {
+            initialize(mmkvRootDir.absolutePath)
+        }
         mmkv = defaultMMKV()
     }
 

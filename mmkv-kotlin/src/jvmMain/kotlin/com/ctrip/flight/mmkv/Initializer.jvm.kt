@@ -21,6 +21,7 @@ fun initialize(rootDir: String, logLevel: MMKVLogLevel = MMKVLogLevel.LevelDebug
             println("[$tag] $logMessage")
         }
     }
+    NativeMMKV.isInitialized = true
 }
 
 /**

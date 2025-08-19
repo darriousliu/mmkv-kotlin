@@ -34,7 +34,7 @@ fun interface MMKVCLibLoader {
     fun load(): String
 }
 
-val defaultLoader: MMKVCLibLoader by lazy {
+private val defaultLoader: MMKVCLibLoader by lazy {
     MMKVCLibLoader {
         val name = when (jvmTarget) {
             MACOS, LINUX -> "libmmkvc"

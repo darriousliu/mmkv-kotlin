@@ -14,7 +14,7 @@ group = "com.ctrip.flight.mmkv"
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(22)
     androidTarget {
         publishLibraryVariants("release")
         instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
@@ -24,6 +24,7 @@ kotlin {
     iosSimulatorArm64()
     macosX64()
     macosArm64()
+    jvm()
 
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
@@ -60,6 +61,14 @@ kotlin {
             implementation(libs.androidx.test.core)
             implementation(libs.androidx.test.runner)
             implementation(libs.androidx.test.rules)
+        }
+        jvmMain.dependencies {
+            implementation(libs.kotlinx.atomicfu)
+        }
+        jvmTest.dependencies {
+            implementation(project(":jvm:macos"))
+            implementation(kotlin("test-junit"))
+            implementation(libs.junit)
         }
     }
 }

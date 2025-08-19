@@ -15,6 +15,7 @@ internal fun interface MMKVInternalLog {
 internal object NativeMMKV {
     internal var global by atomic<Arena?>(null)
     internal var dll by atomic<SymbolLookup?>(null)
+    internal var isInitialized by atomic(false)
 
 
     val MMKV_STRING_SET_RETURN_STRUCT: StructLayout = MemoryLayout.structLayout(

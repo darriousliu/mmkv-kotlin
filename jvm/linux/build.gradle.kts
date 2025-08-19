@@ -15,12 +15,12 @@ val processBuild = tasks.register<Exec>("processBuild") {
     onlyIf {
         System.getProperty("os.name").startsWith("Linux")
     }
-    workingDir = project.file("native-binding-linux")
+    workingDir = project.file(".")
     commandLine(
         "bash", "-c",
         """
-            mkdir -p build && \
-            cd build && \
+            mkdir -p build_cpp && \
+            cd build_cpp && \
             cmake .. && \
             make && \
             sha256sum libmmkvc.so | cut -d ' ' -f 1 > build-linux.hash
@@ -31,6 +31,6 @@ val processBuild = tasks.register<Exec>("processBuild") {
 // 配置JVM的processResources任务
 tasks.named<ProcessResources>("processResources") {
     dependsOn(processBuild)
-    from(project.file("build_cpp/build/libmmkvc.so"))
-    from(project.file("build_cpp/build/build-linux.hash"))
+    from(project.file("build_cpp/libmmkvc.so"))
+    from(project.file("build_cpp/build-linux.hash"))
 }

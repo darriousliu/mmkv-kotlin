@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 
 include(":jvm:linux")
 include(":jvm:macos")
+include(":jvm:windows")

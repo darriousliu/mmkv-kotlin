@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
+import org.gradle.internal.os.OperatingSystem
 
 plugins {
     alias(libs.plugins.multiplatform)
@@ -66,7 +67,14 @@ kotlin {
             implementation(libs.kotlinx.atomicfu)
         }
         jvmTest.dependencies {
-            implementation(project(":jvm:macos"))
+            val currentOs = OperatingSystem.current()
+            val platform = when {
+                currentOs.isMacOsX -> "macos"
+                currentOs.isWindows -> "windows"
+                currentOs.isLinux -> "linux"
+                else -> error("Unsupported OS: $currentOs")
+            }
+            implementation(project(":jvm:$platform"))
             implementation(kotlin("test"))
             implementation(libs.kotlinx.atomicfu)
             implementation(libs.kotlinx.coroutines.core)

@@ -1,30 +1,13 @@
 #include "MMKV/MMKV.h"
 
 #ifdef _WIN32
-#define MMKV_WIN_EXPORT __declspec(dllexport)
+#define MMKV_WIN_DLL_EXPORT __declspec(dllexport)
 #else
-#define MMKV_WIN_EXPORT
+#define MMKV_WIN_DLL_EXPORT
 #endif
 
 using namespace std;
 using namespace mmkv;
-
-
-static wstring stringToWString(const string &str) {
-    const char *mbStr = str.c_str();
-
-    // 获取所需的大小
-    size_t size;
-    mbstowcs_s(&size, nullptr, 0, mbStr, 0);
-
-    // 分配适当大小的wstring
-    std::wstring wStr(size - 1, L'\0'); // size包含null终止符，所以要减1
-
-    // 执行实际转换
-    mbstowcs_s(&size, &wStr[0], size, mbStr, _TRUNCATE);
-
-    return wStr; // 原函数缺少返回语句
-}
 
 typedef void (Logger)(int, const char *, const char *);
 
@@ -53,12 +36,12 @@ static char *stringToChar(const string &src) {
     return buf;
 }
 
-extern "C" MMKV_WIN_EXPORT void mmkv_initialize(const char *path, int level, Logger *logger) {
+extern "C" MMKV_WIN_DLL_EXPORT void mmkv_initialize(const char *path, int level, Logger *logger) {
     g_logger = logger;
-    MMKV::initializeMMKV(stringToWString(path), static_cast<MMKVLogLevel>(level), LogCallback);
+    MMKV::initializeMMKV(string2MMKVPath_t(path), static_cast<MMKVLogLevel>(level), LogCallback);
 }
 
-extern "C" MMKV_WIN_EXPORT MMKV *mmkv_defaultMMKV(int mode, const char *cryptKey) {
+extern "C" MMKV_WIN_DLL_EXPORT MMKV *mmkv_defaultMMKV(int mode, const char *cryptKey) {
     MMKV *mmkv = nullptr;
     if (isNotNullOrEmpty(cryptKey)) {
         const string crypt(cryptKey);
@@ -70,17 +53,17 @@ extern "C" MMKV_WIN_EXPORT MMKV *mmkv_defaultMMKV(int mode, const char *cryptKey
     return mmkv;
 }
 
-extern "C" MMKV_WIN_EXPORT MMKV *mmkv_mmkvWithID(const char *id, int mode, const char *cryptKey, const char *path) {
+extern "C" MMKV_WIN_DLL_EXPORT MMKV *mmkv_mmkvWithID(const char *id, int mode, const char *cryptKey, const char *path) {
     MMKV *mmkv = nullptr;
     if (isNotNullOrEmpty(cryptKey) && isNotNullOrEmpty(path)) {
         const string crypt(cryptKey);
-        const wstring rootPath = stringToWString(path);
+        const wstring rootPath = string2MMKVPath_t(path);
         mmkv = MMKV::mmkvWithID(id, static_cast<MMKVMode>(mode), &crypt, &rootPath);
     } else if (isNotNullOrEmpty(cryptKey) && path == nullptr) {
         const string crypt(cryptKey);
         mmkv = MMKV::mmkvWithID(id, static_cast<MMKVMode>(mode), &crypt);
     } else if (isNotNullOrEmpty(path) && cryptKey == nullptr) {
-        const MMKVPath_t rootPath(stringToWString(path));
+        const MMKVPath_t rootPath(string2MMKVPath_t(path));
         mmkv = MMKV::mmkvWithID(id, static_cast<MMKVMode>(mode), nullptr, &rootPath);
     } else {
         mmkv = MMKV::mmkvWithID(id, static_cast<MMKVMode>(mode));
@@ -89,64 +72,64 @@ extern "C" MMKV_WIN_EXPORT MMKV *mmkv_mmkvWithID(const char *id, int mode, const
     return mmkv;
 }
 
-extern "C" MMKV_WIN_EXPORT int getInt(MMKV *mmkv, const char *key, const int defaultValue) {
+extern "C" MMKV_WIN_DLL_EXPORT int getInt(MMKV *mmkv, const char *key, const int defaultValue) {
     return mmkv->getInt32(key, defaultValue);
 }
 
-extern "C" MMKV_WIN_EXPORT bool setInt(MMKV *mmkv, const char *key, const int value) {
+extern "C" MMKV_WIN_DLL_EXPORT bool setInt(MMKV *mmkv, const char *key, const int value) {
     return mmkv->set(value, key);
 }
 
 // String
-extern "C" MMKV_WIN_EXPORT const char *getString(MMKV *mmkv, const char *key, const char *defaultValue) {
+extern "C" MMKV_WIN_DLL_EXPORT const char *getString(MMKV *mmkv, const char *key, const char *defaultValue) {
     if (string tmp; mmkv->getString(key, tmp)) {
         return stringToChar(tmp);
     }
     return stringToChar(string(defaultValue));
 }
 
-extern "C" MMKV_WIN_EXPORT bool setString(MMKV *mmkv, const char *key, const char *value) {
+extern "C" MMKV_WIN_DLL_EXPORT bool setString(MMKV *mmkv, const char *key, const char *value) {
     return mmkv->set(string(value), key);
 }
 
 // Float
-extern "C" MMKV_WIN_EXPORT float getFloat(MMKV *mmkv, const char *key, const float defaultValue) {
+extern "C" MMKV_WIN_DLL_EXPORT float getFloat(MMKV *mmkv, const char *key, const float defaultValue) {
     return mmkv->getFloat(key, defaultValue);
 }
 
-extern "C" MMKV_WIN_EXPORT bool setFloat(MMKV *mmkv, const char *key, const float value) {
+extern "C" MMKV_WIN_DLL_EXPORT bool setFloat(MMKV *mmkv, const char *key, const float value) {
     return mmkv->set(value, key);
 }
 
 // Long (使用 int64_t 表达 64 位整数)
-extern "C" MMKV_WIN_EXPORT int64_t getLong(MMKV *mmkv, const char *key, const int64_t defaultValue) {
+extern "C" MMKV_WIN_DLL_EXPORT int64_t getLong(MMKV *mmkv, const char *key, const int64_t defaultValue) {
     return mmkv->getInt64(key, defaultValue);
 }
 
-extern "C" MMKV_WIN_EXPORT bool setLong(MMKV *mmkv, const char *key, const int64_t value) {
+extern "C" MMKV_WIN_DLL_EXPORT bool setLong(MMKV *mmkv, const char *key, const int64_t value) {
     return mmkv->set(value, key);
 }
 
 // Double
-extern "C" MMKV_WIN_EXPORT double getDouble(MMKV *mmkv, const char *key, const double defaultValue) {
+extern "C" MMKV_WIN_DLL_EXPORT double getDouble(MMKV *mmkv, const char *key, const double defaultValue) {
     return mmkv->getDouble(key, defaultValue);
 }
 
-extern "C" MMKV_WIN_EXPORT bool setDouble(MMKV *mmkv, const char *key, const double value) {
+extern "C" MMKV_WIN_DLL_EXPORT bool setDouble(MMKV *mmkv, const char *key, const double value) {
     return mmkv->set(value, key);
 }
 
 // Boolean
-extern "C" MMKV_WIN_EXPORT bool getBoolean(MMKV *mmkv, const char *key, const bool defaultValue) {
+extern "C" MMKV_WIN_DLL_EXPORT bool getBoolean(MMKV *mmkv, const char *key, const bool defaultValue) {
     return mmkv->getBool(key, defaultValue);
 }
 
-extern "C" MMKV_WIN_EXPORT bool setBoolean(MMKV *mmkv, const char *key, const bool value) {
+extern "C" MMKV_WIN_DLL_EXPORT bool setBoolean(MMKV *mmkv, const char *key, const bool value) {
     return mmkv->set(value, key);
 }
 
 // ByteArray
-extern "C" MMKV_WIN_EXPORT uint8_t *getByteArray(MMKV *mmkv, const char *key, size_t *size) {
+extern "C" MMKV_WIN_DLL_EXPORT uint8_t *getByteArray(MMKV *mmkv, const char *key, size_t *size) {
     if (MMBuffer buffer; mmkv->getBytes(key, buffer)) {
         *size = buffer.length();
         const auto data = static_cast<uint8_t *>(malloc(*size));
@@ -159,7 +142,7 @@ extern "C" MMKV_WIN_EXPORT uint8_t *getByteArray(MMKV *mmkv, const char *key, si
     return nullptr;
 }
 
-extern "C" MMKV_WIN_EXPORT bool setByteArray(MMKV *mmkv, const char *key, uint8_t *value, const size_t size) {
+extern "C" MMKV_WIN_DLL_EXPORT bool setByteArray(MMKV *mmkv, const char *key, uint8_t *value, const size_t size) {
     const auto buffer = MMBuffer(value, size, MMBufferNoCopy);
     return mmkv->set(buffer, key);
 }
@@ -171,24 +154,24 @@ struct StringListReturn {
 };
 
 // UInt
-extern "C" MMKV_WIN_EXPORT uint32_t getUInt(MMKV *mmkv, const char *key, const uint32_t defaultValue) {
+extern "C" MMKV_WIN_DLL_EXPORT uint32_t getUInt(MMKV *mmkv, const char *key, const uint32_t defaultValue) {
     return mmkv->getUInt32(key, defaultValue);
 }
 
-extern "C" MMKV_WIN_EXPORT bool setUInt(MMKV *mmkv, const char *key, const uint32_t value) {
+extern "C" MMKV_WIN_DLL_EXPORT bool setUInt(MMKV *mmkv, const char *key, const uint32_t value) {
     return mmkv->set(value, key);
 }
 
 // ULong
-extern "C" MMKV_WIN_EXPORT uint64_t getULong(MMKV *mmkv, const char *key, const uint64_t defaultValue) {
+extern "C" MMKV_WIN_DLL_EXPORT uint64_t getULong(MMKV *mmkv, const char *key, const uint64_t defaultValue) {
     return mmkv->getUInt64(key, defaultValue);
 }
 
-extern "C" MMKV_WIN_EXPORT bool setULong(MMKV *mmkv, const char *key, const uint64_t value) {
+extern "C" MMKV_WIN_DLL_EXPORT bool setULong(MMKV *mmkv, const char *key, const uint64_t value) {
     return mmkv->set(value, key);
 }
 
-extern "C" MMKV_WIN_EXPORT StringListReturn *getStringSet(MMKV *mmkv, const char *key) {
+extern "C" MMKV_WIN_DLL_EXPORT StringListReturn *getStringSet(MMKV *mmkv, const char *key) {
     if (vector<string> vec; mmkv->getVector(key, vec)) {
         const auto rtn = static_cast<StringListReturn *>(malloc(sizeof(StringListReturn)));
         if (rtn == nullptr) {
@@ -217,7 +200,7 @@ extern "C" MMKV_WIN_EXPORT StringListReturn *getStringSet(MMKV *mmkv, const char
     return nullptr;
 }
 
-extern "C" MMKV_WIN_EXPORT bool setStringSet(MMKV *mmkv, const char *key, const char **value, const size_t size) {
+extern "C" MMKV_WIN_DLL_EXPORT bool setStringSet(MMKV *mmkv, const char *key, const char **value, const size_t size) {
     if (value) {
         vector<string> vec;
         vec.reserve(size);
@@ -231,11 +214,11 @@ extern "C" MMKV_WIN_EXPORT bool setStringSet(MMKV *mmkv, const char *key, const 
     return mmkv->removeValueForKey(key);
 }
 
-extern "C" MMKV_WIN_EXPORT void mmkv_removeValueForKey(MMKV *mmkv, const char *key) {
+extern "C" MMKV_WIN_DLL_EXPORT void mmkv_removeValueForKey(MMKV *mmkv, const char *key) {
     mmkv->removeValueForKey(key);
 }
 
-extern "C" MMKV_WIN_EXPORT void mmkv_removeValuesForKeys(MMKV *mmkv, const char **keys, const size_t size) {
+extern "C" MMKV_WIN_DLL_EXPORT void mmkv_removeValuesForKeys(MMKV *mmkv, const char **keys, const size_t size) {
     vector<string> vec;
     vec.reserve(size);
     for (size_t i = 0; i < size; ++i) {
@@ -244,31 +227,31 @@ extern "C" MMKV_WIN_EXPORT void mmkv_removeValuesForKeys(MMKV *mmkv, const char 
     mmkv->removeValuesForKeys(vec);
 }
 
-extern "C" MMKV_WIN_EXPORT long mmkv_actualSize(MMKV *mmkv) {
+extern "C" MMKV_WIN_DLL_EXPORT long mmkv_actualSize(MMKV *mmkv) {
     return mmkv->actualSize();
 }
 
-extern "C" MMKV_WIN_EXPORT long mmkv_count(MMKV *mmkv) {
+extern "C" MMKV_WIN_DLL_EXPORT long mmkv_count(MMKV *mmkv) {
     return mmkv->count();
 }
 
-extern "C" MMKV_WIN_EXPORT long mmkv_totalSize(MMKV *mmkv) {
+extern "C" MMKV_WIN_DLL_EXPORT long mmkv_totalSize(MMKV *mmkv) {
     return mmkv->totalSize();
 }
 
-extern "C" MMKV_WIN_EXPORT void mmkv_clearMemoryCache(MMKV *mmkv) {
+extern "C" MMKV_WIN_DLL_EXPORT void mmkv_clearMemoryCache(MMKV *mmkv) {
     mmkv->clearMemoryCache();
 }
 
-extern "C" MMKV_WIN_EXPORT void mmkv_clearAll(MMKV *mmkv) {
+extern "C" MMKV_WIN_DLL_EXPORT void mmkv_clearAll(MMKV *mmkv) {
     mmkv->clearAll();
 }
 
-extern "C" MMKV_WIN_EXPORT void mmkv_close(MMKV *mmkv) {
+extern "C" MMKV_WIN_DLL_EXPORT void mmkv_close(MMKV *mmkv) {
     mmkv->close();
 }
 
-extern "C" MMKV_WIN_EXPORT StringListReturn *mmkv_allKeys(MMKV *mmkv) {
+extern "C" MMKV_WIN_DLL_EXPORT StringListReturn *mmkv_allKeys(MMKV *mmkv) {
     const vector<string> vector = mmkv->allKeys();
 
     const auto rtn = static_cast<StringListReturn *>(malloc(sizeof(StringListReturn)));
@@ -289,48 +272,48 @@ extern "C" MMKV_WIN_EXPORT StringListReturn *mmkv_allKeys(MMKV *mmkv) {
     return rtn;
 }
 
-extern "C" MMKV_WIN_EXPORT bool mmkv_containsKey(MMKV *mmkv, const char *key) {
+extern "C" MMKV_WIN_DLL_EXPORT bool mmkv_containsKey(MMKV *mmkv, const char *key) {
     return mmkv->containsKey(key);
 }
 
-extern "C" MMKV_WIN_EXPORT void mmkv_checkReSetCryptKey(MMKV *mmkv, const char *cryptKey) {
+extern "C" MMKV_WIN_DLL_EXPORT void mmkv_checkReSetCryptKey(MMKV *mmkv, const char *cryptKey) {
     const string crypt(cryptKey);
     mmkv->checkReSetCryptKey(&crypt);
 }
 
-extern "C" MMKV_WIN_EXPORT char *mmkv_mmapID(const MMKV *mmkv) {
+extern "C" MMKV_WIN_DLL_EXPORT char *mmkv_mmapID(const MMKV *mmkv) {
     return stringToChar(mmkv->mmapID());
 }
 
-extern "C" MMKV_WIN_EXPORT void mmkv_sync(MMKV *mmkv, bool flag) {
+extern "C" MMKV_WIN_DLL_EXPORT void mmkv_sync(MMKV *mmkv, bool flag) {
     mmkv->sync(static_cast<SyncFlag>(flag));
 }
 
-extern "C" MMKV_WIN_EXPORT void mmkv_trim(MMKV *mmkv) {
+extern "C" MMKV_WIN_DLL_EXPORT void mmkv_trim(MMKV *mmkv) {
     mmkv->trim();
 }
 
-extern "C" MMKV_WIN_EXPORT bool mmkv_backupOneToDirectory(const char *mmapID, const char *dstDir, const char *srcDir) {
+extern "C" MMKV_WIN_DLL_EXPORT bool mmkv_backupOneToDirectory(const char *mmapID, const char *dstDir, const char *srcDir) {
     MMKVPath_t srcPath;
     if (srcDir != nullptr) {
-        srcPath = MMKVPath_t(stringToWString(srcDir));
+        srcPath = MMKVPath_t(string2MMKVPath_t(srcDir));
     }
-    return MMKV::backupOneToDirectory(mmapID, stringToWString(dstDir), &srcPath);
+    return MMKV::backupOneToDirectory(mmapID, string2MMKVPath_t(dstDir), &srcPath);
 }
 
-extern "C" MMKV_WIN_EXPORT long mmkv_pageSize() {
+extern "C" MMKV_WIN_DLL_EXPORT long mmkv_pageSize() {
     return DEFAULT_MMAP_SIZE;
 }
 
-extern "C" MMKV_WIN_EXPORT void mmkv_setLogLevel(int level) {
+extern "C" MMKV_WIN_DLL_EXPORT void mmkv_setLogLevel(int level) {
     MMKV::setLogLevel(static_cast<MMKVLogLevel>(level));
 }
 
-extern "C" MMKV_WIN_EXPORT const char *mmkv_version() {
+extern "C" MMKV_WIN_DLL_EXPORT const char *mmkv_version() {
     return MMKV_VERSION;
 }
 
-extern "C" MMKV_WIN_EXPORT void mmkv_unregisterHandler() {
+extern "C" MMKV_WIN_DLL_EXPORT void mmkv_unregisterHandler() {
     MMKV::unRegisterLogHandler();
     MMKV::unRegisterErrorHandler();
 }

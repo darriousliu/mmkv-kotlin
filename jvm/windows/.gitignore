@@ -1,0 +1,5 @@
+/build
+/build_cpp
+src/.vs
+src/native-b.*
+src/x64

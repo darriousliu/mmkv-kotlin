@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "native-binding-windows", "native-binding-windows.vcxproj", "{22BC610B-43E1-24EB-FAC5-025CA1FF042D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{32CD39C9-37B5-3D38-A3D9-45E13F4AF9C5} = {32CD39C9-37B5-3D38-A3D9-45E13F4AF9C5}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "core", "..\..\..\MMKV\Core\core.vcxproj", "{32CD39C9-37B5-3D38-A3D9-45E13F4AF9C5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{22BC610B-43E1-24EB-FAC5-025CA1FF042D}.Debug|x64.ActiveCfg = Debug|x64
+		{22BC610B-43E1-24EB-FAC5-025CA1FF042D}.Debug|x64.Build.0 = Debug|x64
+		{22BC610B-43E1-24EB-FAC5-025CA1FF042D}.Release|x64.ActiveCfg = Release|x64
+		{22BC610B-43E1-24EB-FAC5-025CA1FF042D}.Release|x64.Build.0 = Release|x64
+		{32CD39C9-37B5-3D38-A3D9-45E13F4AF9C5}.Debug|x64.ActiveCfg = Debug|x64
+		{32CD39C9-37B5-3D38-A3D9-45E13F4AF9C5}.Debug|x64.Build.0 = Debug|x64
+		{32CD39C9-37B5-3D38-A3D9-45E13F4AF9C5}.Release|x64.ActiveCfg = Release|x64
+		{32CD39C9-37B5-3D38-A3D9-45E13F4AF9C5}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C5D37503-9DCA-45B6-9163-33137BC0C959}
+	EndGlobalSection
+EndGlobal

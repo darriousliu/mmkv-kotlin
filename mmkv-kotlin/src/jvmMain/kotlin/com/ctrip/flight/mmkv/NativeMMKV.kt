@@ -23,9 +23,9 @@ internal object NativeMMKV {
         JAVA_LONG.withName("size"),
     )
 
-    val initializeMMKV: (String, Int, (Int, String, String) -> Unit) -> Unit by lazy {
+    val initialize: (String, Int, (Int, String, String) -> Unit) -> Unit by lazy {
         val funcHandle = Linker.nativeLinker().downcallHandle(
-            dll!!.find("initializeMMKV").orElseThrow(),
+            dll!!.find("mmkv_initialize").orElseThrow(),
             FunctionDescriptor.ofVoid(ADDRESS, JAVA_INT, ADDRESS)
         )
 

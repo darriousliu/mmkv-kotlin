@@ -30,7 +30,7 @@ static char *stringToChar(const string &src) {
     return buf;
 }
 
-extern "C" void initializeMMKV(const char *path, int level, Logger *logger) {
+extern "C" void mmkv_initialize(const char *path, int level, Logger *logger) {
     g_logger = logger;
     MMKV::initializeMMKV(path, static_cast<MMKVLogLevel>(level), LogCallback);
 }

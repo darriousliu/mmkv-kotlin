@@ -8,7 +8,7 @@ import java.io.File
 fun initialize(rootDir: String, logLevel: MMKVLogLevel = MMKVLogLevel.LevelDebug) {
     NativeMMKV.global = Arena.ofShared()
     NativeMMKV.dll = SymbolLookup.libraryLookup(defaultLoader.load(), NativeMMKV.global)
-    NativeMMKV.initializeMMKV(rootDir, logLevel.ordinal) { level, tag, message ->
+    NativeMMKV.initialize(rootDir, logLevel.ordinal) { level, tag, message ->
         if (level != MMKVLogLevel.LevelNone.ordinal) {
             val logMessage = when (level) {
                 MMKVLogLevel.LevelDebug.ordinal -> "DEBUG: $message"
@@ -17,11 +17,11 @@ fun initialize(rootDir: String, logLevel: MMKVLogLevel = MMKVLogLevel.LevelDebug
                 MMKVLogLevel.LevelError.ordinal -> "ERROR: $message"
                 else -> message
             }
-            if (level < logLevel.ordinal) return@initializeMMKV
+            if (level < logLevel.ordinal) return@initialize
             println("[$tag] $logMessage")
         }
     }
-    NativeMMKV.isInitialized = true
+//    NativeMMKV.isInitialized = true
 }
 
 /**

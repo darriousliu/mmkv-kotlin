@@ -15,7 +15,7 @@ val processBuild = tasks.register<Exec>("processBuild") {
     onlyIf {
         System.getProperty("os.name").startsWith("Win")
     }
-    workingDir = project.file(".")
+    workingDir = project.file("src")
     commandLine("pwsh","-c","""
         msbuild native-binding-windows.sln /p:Configuration=Release
         (Get-FileHash -Algorithm SHA256 -Path "x64/Release/mmkvc.dll").Hash | Out-File -FilePath "x64/Release/build-windows.hash"

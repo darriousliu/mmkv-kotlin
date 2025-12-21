@@ -11,7 +11,7 @@ plugins {
 }
 
 version = "1.3.1"
-group = "com.ctrip.flight.mmkv"
+group = "io.github.darriousliu"
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {

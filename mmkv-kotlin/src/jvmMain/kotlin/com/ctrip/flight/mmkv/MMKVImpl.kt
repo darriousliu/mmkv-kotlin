@@ -48,43 +48,111 @@ class MMKVImpl(
         return NativeMMKV.setStringSet(ptr, key, value)
     }
 
-    override fun takeString(key: String, default: String): String {
+    @Deprecated(
+        message = "Renamed to 'getString' for clarity, as the 'take' prefix could be confusing.",
+        replaceWith = ReplaceWith("getString(key, default)")
+    )
+    override fun takeString(key: String, default: String): String =
+        NativeMMKV.getString(ptr, key, default)
+
+    @Deprecated(
+        message = "Renamed to 'getBoolean' for clarity, as the 'take' prefix could be confusing.",
+        replaceWith = ReplaceWith("getBoolean(key, default)")
+    )
+    override fun takeBoolean(key: String, default: Boolean): Boolean =
+        NativeMMKV.getBoolean(ptr, key, default)
+
+    @Deprecated(
+        message = "Renamed to 'getInt' for clarity, as the 'take' prefix could be confusing.",
+        replaceWith = ReplaceWith("getInt(key, default)")
+    )
+    override fun takeInt(key: String, default: Int): Int = NativeMMKV.getInt(ptr, key, default)
+
+    @Deprecated(
+        message = "Renamed to 'getLong' for clarity, as the 'take' prefix could be confusing.",
+        replaceWith = ReplaceWith("getLong(key, default)")
+    )
+    override fun takeLong(key: String, default: Long): Long = NativeMMKV.getLong(ptr, key, default)
+
+    @Deprecated(
+        message = "Renamed to 'getFloat' for clarity, as the 'take' prefix could be confusing.",
+        replaceWith = ReplaceWith("getFloat(key, default)")
+    )
+    override fun takeFloat(key: String, default: Float): Float =
+        NativeMMKV.getFloat(ptr, key, default)
+
+    @Deprecated(
+        message = "Renamed to 'getDouble' for clarity, as the 'take' prefix could be confusing.",
+        replaceWith = ReplaceWith("getDouble(key, default)")
+    )
+    override fun takeDouble(key: String, default: Double): Double =
+        NativeMMKV.getDouble(ptr, key, default)
+
+    @Deprecated(
+        message = "Renamed to 'getByteArray' for clarity, as the 'take' prefix could be confusing.",
+        replaceWith = ReplaceWith("getByteArray(key, default)")
+    )
+    override fun takeByteArray(key: String, default: ByteArray?): ByteArray? =
+        NativeMMKV.getByteArray(ptr, key, default)
+
+    @Deprecated(
+        message = "Renamed to 'getUInt' for clarity, as the 'take' prefix could be confusing.",
+        replaceWith = ReplaceWith("getUInt(key, default)")
+    )
+    override fun takeUInt(key: String, default: UInt): UInt =
+        NativeMMKV.getInt(ptr, key, default.toInt()).toUInt()
+
+    @Deprecated(
+        message = "Renamed to 'getULong' for clarity, as the 'take' prefix could be confusing.",
+        replaceWith = ReplaceWith("getULong(key, default)")
+    )
+    override fun takeULong(key: String, default: ULong): ULong =
+        NativeMMKV.getLong(ptr, key, default.toLong()).toULong()
+
+    @Deprecated(
+        message = "Renamed to 'getStringSet' for clarity, as the 'take' prefix could be confusing.",
+        replaceWith = ReplaceWith("getStringSet(key, default)")
+    )
+    override fun takeStringSet(key: String, default: Set<String>?): Set<String>? =
+        NativeMMKV.getStringSet(ptr, key, default)
+
+    override fun getString(key: String, default: String): String {
         return NativeMMKV.getString(ptr, key, default)
     }
 
-    override fun takeBoolean(key: String, default: Boolean): Boolean {
+    override fun getBoolean(key: String, default: Boolean): Boolean {
         return NativeMMKV.getBoolean(ptr, key, default)
     }
 
-    override fun takeInt(key: String, default: Int): Int {
+    override fun getInt(key: String, default: Int): Int {
         return NativeMMKV.getInt(ptr, key, default)
     }
 
-    override fun takeLong(key: String, default: Long): Long {
+    override fun getLong(key: String, default: Long): Long {
         return NativeMMKV.getLong(ptr, key, default)
     }
 
-    override fun takeFloat(key: String, default: Float): Float {
+    override fun getFloat(key: String, default: Float): Float {
         return NativeMMKV.getFloat(ptr, key, default)
     }
 
-    override fun takeDouble(key: String, default: Double): Double {
+    override fun getDouble(key: String, default: Double): Double {
         return NativeMMKV.getDouble(ptr, key, default)
     }
 
-    override fun takeByteArray(key: String, default: ByteArray?): ByteArray? {
+    override fun getByteArray(key: String, default: ByteArray?): ByteArray? {
         return NativeMMKV.getByteArray(ptr, key, default)
     }
 
-    override fun takeUInt(key: String, default: UInt): UInt {
+    override fun getUInt(key: String, default: UInt): UInt {
         return NativeMMKV.getUInt(ptr, key, default)
     }
 
-    override fun takeULong(key: String, default: ULong): ULong {
+    override fun getULong(key: String, default: ULong): ULong {
         return NativeMMKV.getULong(ptr, key, default)
     }
 
-    override fun takeStringSet(
+    override fun getStringSet(
         key: String,
         default: Set<String>?
     ): Set<String>? {

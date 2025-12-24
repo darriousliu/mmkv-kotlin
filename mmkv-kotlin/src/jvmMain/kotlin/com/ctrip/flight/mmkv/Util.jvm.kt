@@ -2,7 +2,6 @@ package com.ctrip.flight.mmkv
 
 import java.io.File
 import java.io.FileInputStream
-import java.lang.foreign.Arena
 import java.security.MessageDigest
 
 actual fun backupOneToDirectory(
@@ -10,29 +9,24 @@ actual fun backupOneToDirectory(
     dstDir: String,
     rootPath: String?
 ): Boolean {
-    return NativeMMKV.backupOneToDirectory(mmapID, dstDir, rootPath)
+    return NativeMMKV.lib.mmkv_backupOneToDirectory(mmapID, dstDir, rootPath)
 }
 
 actual fun pageSize(): Long {
-    return NativeMMKV.pageSize()
+    return NativeMMKV.lib.mmkv_pageSize()
 }
 
 actual fun setLogLevel(logLevel: MMKVLogLevel) {
-    NativeMMKV.setLogLevel(logLevel.ordinal)
+    NativeMMKV.lib.mmkv_setLogLevel(logLevel.ordinal)
 }
 
 actual fun version(): String {
-    return NativeMMKV.version()
+    return NativeMMKV.lib.mmkv_version()
 }
 
 actual fun unregisterHandler() {
-    NativeMMKV.unregisterHandler()
+    NativeMMKV.lib.mmkv_unregisterHandler()
 }
-
-internal fun <T> useArena(arena: Arena = Arena.ofConfined(), block: Arena.() -> T): T =
-    with(arena) {
-        use(block)
-    }
 
 internal val jvmTarget by lazy {
     val osName = System.getProperty("os.name")

@@ -1,18 +1,13 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.vanniktech.maven.publish)
 }
 
-version = "1.3.1"
-group = "io.github.darriousliu"
+version = properties["version"].toString()
+group = properties["group"].toString()
 
 kotlin {
-    jvmToolchain(22)
-    compilerOptions {
-        jvmTarget = JvmTarget.JVM_22
-    }
+    jvmToolchain(11)
 }
 
 val processBuild = tasks.register<Exec>("processBuild") {

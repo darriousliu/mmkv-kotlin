@@ -1,51 +1,55 @@
 package com.ctrip.flight.mmkv
 
-import java.lang.foreign.MemorySegment
+import com.sun.jna.Memory
+import com.sun.jna.Pointer
 
 class MMKVImpl(
-    private val ptr: MemorySegment
+    private val handle: Pointer
 ) : MMKV_KMP {
+    private val lib = NativeMMKV.lib
+
     override fun set(key: String, value: String): Boolean {
-        return NativeMMKV.setString(ptr, key, value)
+        return lib.setString(handle, key, value)
     }
 
     override fun set(key: String, value: Boolean): Boolean {
-        return NativeMMKV.setBoolean(ptr, key, value)
+        return lib.setBoolean(handle, key, value)
     }
 
     override fun set(key: String, value: Int): Boolean {
-        return NativeMMKV.setInt(ptr, key, value)
+        return lib.setInt(handle, key, value)
     }
 
     override fun set(key: String, value: Long): Boolean {
-        return NativeMMKV.setLong(ptr, key, value)
+        return lib.setLong(handle, key, value)
     }
 
     override fun set(key: String, value: Float): Boolean {
-        return NativeMMKV.setFloat(ptr, key, value)
+        return lib.setFloat(handle, key, value)
     }
 
     override fun set(key: String, value: Double): Boolean {
-        return NativeMMKV.setDouble(ptr, key, value)
+        return lib.setDouble(handle, key, value)
     }
 
     override fun set(key: String, value: ByteArray): Boolean {
-        return NativeMMKV.setByteArray(ptr, key, value)
+        return lib.setByteArray(handle, key, value, value.size.toLong())
     }
 
     override fun set(key: String, value: UInt): Boolean {
-        return NativeMMKV.setUInt(ptr, key, value)
+        return lib.setUInt(handle, key, value.toInt())
     }
 
     override fun set(key: String, value: ULong): Boolean {
-        return NativeMMKV.setULong(ptr, key, value)
+        return lib.setULong(handle, key, value.toLong())
     }
 
     override fun set(
         key: String,
         value: Set<String>?
     ): Boolean {
-        return NativeMMKV.setStringSet(ptr, key, value)
+        val arr = value?.toTypedArray()
+        return lib.setStringSet(handle, key, arr, arr?.size?.toLong() ?: 0L)
     }
 
     @Deprecated(
@@ -53,164 +57,199 @@ class MMKVImpl(
         replaceWith = ReplaceWith("getString(key, default)")
     )
     override fun takeString(key: String, default: String): String =
-        NativeMMKV.getString(ptr, key, default)
+        lib.getString(handle, key, default)
 
     @Deprecated(
         message = "Renamed to 'getBoolean' for clarity, as the 'take' prefix could be confusing.",
         replaceWith = ReplaceWith("getBoolean(key, default)")
     )
     override fun takeBoolean(key: String, default: Boolean): Boolean =
-        NativeMMKV.getBoolean(ptr, key, default)
+        lib.getBoolean(handle, key, default)
 
     @Deprecated(
         message = "Renamed to 'getInt' for clarity, as the 'take' prefix could be confusing.",
         replaceWith = ReplaceWith("getInt(key, default)")
     )
-    override fun takeInt(key: String, default: Int): Int = NativeMMKV.getInt(ptr, key, default)
+    override fun takeInt(key: String, default: Int): Int = lib.getInt(handle, key, default)
 
     @Deprecated(
         message = "Renamed to 'getLong' for clarity, as the 'take' prefix could be confusing.",
         replaceWith = ReplaceWith("getLong(key, default)")
     )
-    override fun takeLong(key: String, default: Long): Long = NativeMMKV.getLong(ptr, key, default)
+    override fun takeLong(key: String, default: Long): Long = lib.getLong(handle, key, default)
 
     @Deprecated(
         message = "Renamed to 'getFloat' for clarity, as the 'take' prefix could be confusing.",
         replaceWith = ReplaceWith("getFloat(key, default)")
     )
     override fun takeFloat(key: String, default: Float): Float =
-        NativeMMKV.getFloat(ptr, key, default)
+        lib.getFloat(handle, key, default)
 
     @Deprecated(
         message = "Renamed to 'getDouble' for clarity, as the 'take' prefix could be confusing.",
         replaceWith = ReplaceWith("getDouble(key, default)")
     )
     override fun takeDouble(key: String, default: Double): Double =
-        NativeMMKV.getDouble(ptr, key, default)
+        lib.getDouble(handle, key, default)
 
     @Deprecated(
         message = "Renamed to 'getByteArray' for clarity, as the 'take' prefix could be confusing.",
         replaceWith = ReplaceWith("getByteArray(key, default)")
     )
     override fun takeByteArray(key: String, default: ByteArray?): ByteArray? =
-        NativeMMKV.getByteArray(ptr, key, default)
+        getByteArray(key, default)
 
     @Deprecated(
         message = "Renamed to 'getUInt' for clarity, as the 'take' prefix could be confusing.",
         replaceWith = ReplaceWith("getUInt(key, default)")
     )
     override fun takeUInt(key: String, default: UInt): UInt =
-        NativeMMKV.getInt(ptr, key, default.toInt()).toUInt()
+        lib.getInt(handle, key, default.toInt()).toUInt()
 
     @Deprecated(
         message = "Renamed to 'getULong' for clarity, as the 'take' prefix could be confusing.",
         replaceWith = ReplaceWith("getULong(key, default)")
     )
     override fun takeULong(key: String, default: ULong): ULong =
-        NativeMMKV.getLong(ptr, key, default.toLong()).toULong()
+        lib.getLong(handle, key, default.toLong()).toULong()
 
     @Deprecated(
         message = "Renamed to 'getStringSet' for clarity, as the 'take' prefix could be confusing.",
         replaceWith = ReplaceWith("getStringSet(key, default)")
     )
     override fun takeStringSet(key: String, default: Set<String>?): Set<String>? =
-        NativeMMKV.getStringSet(ptr, key, default)
+        getStringSet(key, default)
 
     override fun getString(key: String, default: String): String {
-        return NativeMMKV.getString(ptr, key, default)
+        return lib.getString(handle, key, default)
     }
 
     override fun getBoolean(key: String, default: Boolean): Boolean {
-        return NativeMMKV.getBoolean(ptr, key, default)
+        return lib.getBoolean(handle, key, default)
     }
 
     override fun getInt(key: String, default: Int): Int {
-        return NativeMMKV.getInt(ptr, key, default)
+        return lib.getInt(handle, key, default)
     }
 
     override fun getLong(key: String, default: Long): Long {
-        return NativeMMKV.getLong(ptr, key, default)
+        return lib.getLong(handle, key, default)
     }
 
     override fun getFloat(key: String, default: Float): Float {
-        return NativeMMKV.getFloat(ptr, key, default)
+        return lib.getFloat(handle, key, default)
     }
 
     override fun getDouble(key: String, default: Double): Double {
-        return NativeMMKV.getDouble(ptr, key, default)
+        return lib.getDouble(handle, key, default)
     }
 
     override fun getByteArray(key: String, default: ByteArray?): ByteArray? {
-        return NativeMMKV.getByteArray(ptr, key, default)
+        val sizePtr = Memory(8) // long
+        val ptr = lib.getByteArray(handle, key, sizePtr)
+        return if (ptr == null) {
+            default
+        } else {
+            val size = sizePtr.getLong(0)
+            val bytes = ptr.getByteArray(0, size.toInt())
+            NativeMMKV.free(ptr)
+            bytes
+        }
     }
 
     override fun getUInt(key: String, default: UInt): UInt {
-        return NativeMMKV.getUInt(ptr, key, default)
+        return lib.getUInt(handle, key, default.toInt()).toUInt()
     }
 
     override fun getULong(key: String, default: ULong): ULong {
-        return NativeMMKV.getULong(ptr, key, default)
+        return lib.getULong(handle, key, default.toLong()).toULong()
     }
 
     override fun getStringSet(
         key: String,
         default: Set<String>?
     ): Set<String>? {
-        return NativeMMKV.getStringSet(ptr, key, default)
+        val ret = lib.getStringSet(handle, key) ?: return default
+        val size = ret.size
+        val itemsPtr = ret.items ?: return emptySet()
+        val result = mutableSetOf<String>()
+        val ptrArray = itemsPtr.getPointerArray(0, size.toInt())
+        for (p in ptrArray) {
+            result.add(p.getString(0))
+            NativeMMKV.free(p)
+        }
+        NativeMMKV.free(ret.items)
+        // ret is a Structure. If it was allocated by C++, we need to free it.
+        // C++: return static_cast<StringListReturn *>(malloc(...));
+        // So yes, we must free ret.
+        NativeMMKV.free(ret.pointer)
+        return result
     }
 
     override fun removeValueForKey(key: String) {
-        NativeMMKV.removeValueForKey(ptr, key)
+        lib.mmkv_removeValueForKey(handle, key)
     }
 
     override fun removeValuesForKeys(keys: List<String>) {
-        NativeMMKV.removeValuesForKeys(ptr, keys)
+        val arr = keys.toTypedArray()
+        lib.mmkv_removeValuesForKeys(handle, arr, arr.size.toLong())
     }
 
     override val actualSize: Long
-        get() = NativeMMKV.actualSize(ptr)
+        get() = lib.mmkv_actualSize(handle)
     override val count: Long
-        get() = NativeMMKV.count(ptr)
+        get() = lib.mmkv_count(handle)
     override val totalSize: Long
-        get() = NativeMMKV.totalSize(ptr)
+        get() = lib.mmkv_totalSize(handle)
 
     override fun clearMemoryCache() {
-        NativeMMKV.clearMemoryCache(ptr)
+        lib.mmkv_clearMemoryCache(handle)
     }
 
     override fun clearAll() {
-        NativeMMKV.clearAll(ptr)
+        lib.mmkv_clearAll(handle)
     }
 
     override fun close() {
-        NativeMMKV.close(ptr)
+        lib.mmkv_close(handle)
     }
 
     override fun allKeys(): List<String> {
-        return NativeMMKV.allKeys(ptr)
+        val ret = lib.mmkv_allKeys(handle) ?: return emptyList()
+        val size = ret.size
+        val itemsPtr = ret.items ?: return emptyList()
+        val result = mutableListOf<String>()
+        val ptrArray = itemsPtr.getPointerArray(0, size.toInt())
+        for (p in ptrArray) {
+            result.add(p.getString(0))
+            NativeMMKV.free(p)
+        }
+        NativeMMKV.free(ret.items)
+        NativeMMKV.free(ret.pointer)
+        return result
     }
 
     override fun containsKey(key: String): Boolean {
-        return NativeMMKV.containsKey(ptr, key)
+        return lib.mmkv_containsKey(handle, key)
     }
 
     override fun checkReSetCryptKey(key: String?) {
-        NativeMMKV.checkReSetCryptKey(ptr, key)
+        lib.mmkv_checkReSetCryptKey(handle, key)
     }
 
     override fun mmapID(): String {
-        return NativeMMKV.mmapID(ptr)
+        return lib.mmkv_mmapID(handle)
     }
 
     override fun async() {
-        NativeMMKV.async(ptr)
+        lib.mmkv_sync(handle, false)
     }
 
     override fun sync() {
-        NativeMMKV.sync(ptr)
+        lib.mmkv_sync(handle, true)
     }
 
     override fun trim() {
-        NativeMMKV.trim(ptr)
+        lib.mmkv_trim(handle)
     }
 }

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.vanniktech.maven.publish)
@@ -7,7 +9,10 @@ version = properties["version"].toString()
 group = properties["group"].toString()
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(22)
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_22
+    }
 }
 
 val processBuild = tasks.register<Exec>("processBuild") {

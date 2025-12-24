@@ -1,15 +1,13 @@
 package com.ctrip.flight.mmkv
 
-import com.ctrip.flight.mmkv.JvmTarget.LINUX
-import com.ctrip.flight.mmkv.JvmTarget.MACOS
-import com.ctrip.flight.mmkv.JvmTarget.WINDOWS
-import com.sun.jna.Native
+import java.lang.foreign.Arena
+import java.lang.foreign.SymbolLookup
+import com.ctrip.flight.mmkv.JvmTarget.*
 import java.io.File
 
 fun initialize(rootDir: String, logLevel: MMKVLogLevel = MMKVLogLevel.LevelDebug) {
-    val libPath = defaultLoader.load()
-    NativeMMKV.lib = Native.load(libPath, LibMMKV::class.java)
-
+    NativeMMKV.global = Arena.ofShared()
+    NativeMMKV.dll = SymbolLookup.libraryLookup(defaultLoader.load(), NativeMMKV.global)
     NativeMMKV.initialize(rootDir, logLevel.ordinal) { level, tag, message ->
         if (level != MMKVLogLevel.LevelNone.ordinal) {
             val logMessage = when (level) {

@@ -9,7 +9,6 @@ desugar-jdk-libs = "2.1.5"
 vanniktech-maven-publish = "0.35.0"
 atomicfu = "0.29.0"
 coroutines = "1.10.2"
-jna = "5.18.1"
 
 [libraries]
 
@@ -21,7 +20,6 @@ androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "
 desugar-jdk-libs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugar-jdk-libs" }
 kotlinx-atomicfu = { group = "org.jetbrains.kotlinx", name = "atomicfu", version.ref = "atomicfu" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
-jna = { group = "net.java.dev.jna", name = "jna", version.ref = "jna" }
 
 [plugins]
 

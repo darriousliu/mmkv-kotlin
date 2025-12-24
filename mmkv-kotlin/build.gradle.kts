@@ -1,6 +1,6 @@
-import org.gradle.internal.os.OperatingSystem
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
+import org.gradle.internal.os.OperatingSystem
 
 plugins {
     alias(libs.plugins.multiplatform)
@@ -15,7 +15,7 @@ group = properties["group"].toString()
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(22)
     androidTarget {
         publishLibraryVariants("release")
         instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
@@ -65,7 +65,6 @@ kotlin {
         }
         jvmMain.dependencies {
             implementation(libs.kotlinx.atomicfu)
-            implementation(libs.jna)
         }
         jvmTest.dependencies {
             val currentOs = OperatingSystem.current()

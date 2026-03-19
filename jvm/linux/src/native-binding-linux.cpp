@@ -7,15 +7,20 @@ typedef void (Logger)(int, const char *, const char *);
 
 static Logger *g_logger = nullptr;
 
-static void LogCallback(const MMKVLogLevel level,
-        const char *file,
-        int line,
-        const char *function,
-        MMKVLog_t message) {
-    if (g_logger) {
-        g_logger(level, file, message.c_str());
+class KotlinMMKVHandler final : public MMKVHandler {
+public:
+    void mmkvLog(const MMKVLogLevel level,
+                 const char *file,
+                 int line,
+                 const char *function,
+                 MMKVLog_t message) override {
+        if (g_logger) {
+            g_logger(level, file, message.c_str());
+        }
     }
-}
+};
+
+static KotlinMMKVHandler g_handler;
 
 static bool isNotNullOrEmpty(const char *str) {
     return str != nullptr && strlen(str) > 0;
@@ -32,7 +37,7 @@ static char *stringToChar(const string &src) {
 
 extern "C" void mmkv_initialize(const char *path, int level, Logger *logger) {
     g_logger = logger;
-    MMKV::initializeMMKV(path, static_cast<MMKVLogLevel>(level), LogCallback);
+    MMKV::initializeMMKV(path, static_cast<MMKVLogLevel>(level), logger != nullptr ? &g_handler : nullptr);
 }
 
 
@@ -309,6 +314,6 @@ extern "C" const char *mmkv_version() {
 }
 
 extern "C" void mmkv_unregisterHandler() {
-    MMKV::unRegisterLogHandler();
-    MMKV::unRegisterErrorHandler();
+    g_logger = nullptr;
+    MMKV::unRegisterHandler();
 }

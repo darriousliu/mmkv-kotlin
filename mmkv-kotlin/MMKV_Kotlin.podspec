@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'mmkv_kotlin'
-    spec.version                  = '1.3.1'
+    spec.version                  = '1.4.1'
     spec.homepage                 = 'Link to the Shared Module homepage'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
@@ -10,28 +10,21 @@ Pod::Spec.new do |spec|
     spec.libraries                = 'c++'
     spec.ios.deployment_target    = '13.0'
     spec.osx.deployment_target    = '10.15'
-    spec.dependency 'MMKV', '2.2.4'
-                
+    spec.dependency 'MMKV', '2.4.0'
     if !Dir.exist?('build/cocoapods/framework/MMKV_Kotlin.framework') || Dir.empty?('build/cocoapods/framework/MMKV_Kotlin.framework')
         raise "
-
         Kotlin framework 'MMKV_Kotlin' doesn't exist yet, so a proper Xcode project can't be generated.
         'pod install' should be executed after running ':generateDummyFramework' Gradle task:
-
             ./gradlew :mmkv-kotlin:generateDummyFramework
-
         Alternatively, proper pod installation is performed during Gradle sync in the IDE (if Podfile location is set)"
     end
-                
     spec.xcconfig = {
         'ENABLE_USER_SCRIPT_SANDBOXING' => 'NO',
     }
-                
     spec.pod_target_xcconfig = {
         'KOTLIN_PROJECT_PATH' => ':mmkv-kotlin',
         'PRODUCT_MODULE_NAME' => 'MMKV_Kotlin',
     }
-                
     spec.script_phases = [
         {
             :name => 'Build mmkv_kotlin',
@@ -39,8 +32,8 @@ Pod::Spec.new do |spec|
             :shell_path => '/bin/sh',
             :script => <<-SCRIPT
                 if [ "YES" = "$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED" ]; then
-                  echo "Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \"YES\""
-                  exit 0
+                    echo "Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \"YES\""
+                    exit 0
                 fi
                 set -ev
                 REPO_ROOT="$PODS_TARGET_SRCROOT"
@@ -51,5 +44,4 @@ Pod::Spec.new do |spec|
             SCRIPT
         }
     ]
-                
 end
